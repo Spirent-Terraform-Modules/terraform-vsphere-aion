@@ -9,7 +9,7 @@ provider "vsphere" {
 }
 
 data "vsphere_datacenter" "aion" {
-  name          = var.vsphere_datacenter
+  name = var.vsphere_datacenter
 }
 
 data "vsphere_datastore" "aion" {
@@ -22,42 +22,35 @@ data "vsphere_compute_cluster" "aion" {
   datacenter_id = data.vsphere_datacenter.aion.id
 }
 
-data "vsphere_host" "aion" {
-  name          = var.vsphere_host
-  datacenter_id = data.vsphere_datacenter.aion.id
-}
-
 data "vsphere_network" "mgmt_plane" {
-  name          = "Host Network - A1"
+  name          = var.mgmt_plane_network
   datacenter_id = data.vsphere_datacenter.aion.id
 }
 
 module "aion" {
-  source                  = "../.."
-  instance_count          = var.instance_count
-  num_cpus                = var.num_cpus
-  memory                  = var.memory
-  datacenter_id           = data.vsphere_datacenter.aion.id
-  resource_pool_id        = data.vsphere_compute_cluster.aion.resource_pool_id
-  mgmt_plane_network_id   = data.vsphere_network.mgmt_plane.id
-  template_name           = var.template_name
-  aion_url                = var.aion_url
-  aion_user               = var.aion_user
-  aion_password           = var.aion_password
-  admin_password          = var.admin_password
+  source                = "../.."
+  instance_count        = var.instance_count
+  num_cpus              = var.num_cpus
+  memory                = var.memory
+  datacenter            = data.vsphere_datacenter.aion.name
+  datastore             = data.vsphere_datastore.aion.name
+  resource_pool_id      = data.vsphere_compute_cluster.aion.resource_pool_id
+  mgmt_plane_network_id = data.vsphere_network.mgmt_plane.id
+  template_name         = var.template_name
+  aion_url              = var.aion_url
+  aion_user             = var.aion_user
+  aion_password         = var.aion_password
+  admin_password        = var.admin_password
+  ip_address_list       = var.ip_address_list
+  ip_netmask            = var.ip_netmask
+  ip_gateway            = var.ip_gateway
+  mac_address_list      = var.mac_address_list
+  public_key_file       = var.public_key_file
+  private_key_file      = var.private_key_file
+  iso_dest              = var.iso_dest
 }
 
 output "instance_uuids" {
   description = "List of UUIDs assigned to the instances, if applicable."
   value       = module.aion.*.instance_uuids
-}
-
-output "instance_default_ips" {
-  description = "List of default IP addresses assigned to the instances, if applicable."
-  value       = module.aion.*.instance_default_ips
-}
-
-output "instance_guest_ips" {
-  description = "List of guest IP addresses assigned to the instances, if applicable"
-  value       = module.aion.*.instance_guest_ips
 }

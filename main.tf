@@ -1,29 +1,89 @@
+
+data "vsphere_datacenter" "aion" {
+  name = var.datacenter
+}
+
+data "vsphere_datastore" "aion" {
+  name          = var.datastore
+  datacenter_id = data.vsphere_datacenter.aion.id
+}
+
 data "vsphere_virtual_machine" "template_aion" {
   name          = var.template_name
-  datacenter_id = var.datacenter_id
+  datacenter_id = data.vsphere_datacenter.aion.id
 }
 
 # create AION
 resource "vsphere_virtual_machine" "aion" {
-  count               = var.instance_count
-  name                = "${var.instance_name}-${count.index}"
-  resource_pool_id    = var.resource_pool_id
-  datastore_id        = var.datastore_id
-  num_cpus            = var.num_cpus
-  memory              = var.memory
-  guest_id            = data.vsphere_virtual_machine.template_aion.guest_id
-  scsi_type           = data.vsphere_virtual_machine.template_aion.scsi_type
+  count    = var.instance_count
+  name     = "${var.instance_name}-${count.index}"
+  num_cpus = var.num_cpus
+  memory   = var.memory
+
+  resource_pool_id = var.resource_pool_id
+  datastore_id     = data.vsphere_datastore.aion.id
+  guest_id         = data.vsphere_virtual_machine.template_aion.guest_id
+  scsi_type        = data.vsphere_virtual_machine.template_aion.scsi_type
+
+  # Don't wait for guest networking
+  wait_for_guest_net_timeout = 0
+  wait_for_guest_ip_timeout  = 0
+
   network_interface {
-    network_id        = var.mgmt_plane_network_id
-    adapter_type      = data.vsphere_virtual_machine.template_aion.network_interface_types[0]
+    network_id   = var.mgmt_plane_network_id
+    adapter_type = data.vsphere_virtual_machine.template_aion.network_interface_types[0]
+
+    use_static_mac = true
+    mac_address    = var.mac_address_list[count.index]
   }
+
   disk {
-    name              = "${var.instance_name}.vmdk"
-    size              = data.vsphere_virtual_machine.template_aion.disks.0.size
-    thin_provisioned  = data.vsphere_virtual_machine.template_aion.disks.0.thin_provisioned
+    name             = "${var.instance_name}.vmdk"
+    size             = data.vsphere_virtual_machine.template_aion.disks.0.size
+    eagerly_scrub    = data.vsphere_virtual_machine.template_aion.disks.0.eagerly_scrub
+    thin_provisioned = data.vsphere_virtual_machine.template_aion.disks.0.thin_provisioned
+    unit_number      = 0
   }
+
   clone {
-    template_uuid     = data.vsphere_virtual_machine.template_aion.id
+    template_uuid = data.vsphere_virtual_machine.template_aion.id
+  }
+
+  cdrom {
+    datastore_id = data.vsphere_datastore.aion.id
+    path         = vsphere_file.iso[count.index].destination_file
+  }
+}
+
+resource "vsphere_file" "iso" {
+  depends_on         = [null_resource.geniso]
+  count              = var.instance_count
+  datacenter         = data.vsphere_datacenter.aion.name
+  datastore          = data.vsphere_datastore.aion.name
+  source_file        = "${path.module}/cloud-init/tmp-${count.index}/cloud-init.iso"
+  destination_file   = "${var.iso_dest}/cloud-init-${count.index}.iso"
+  create_directories = true
+}
+
+resource "local_file" "cloud_cfg" {
+  count    = var.instance_count
+  content  = <<-EOT
+  SSH_PUBLIC_KEY="${file(var.public_key_file)}"
+  IPV4_ADDR=${var.ip_address_list[count.index]}
+  IPV4_NETMASK=${var.ip_netmask}
+  IPV4_GATEWAY=${var.ip_gateway}
+  TMP_DIR=${path.module}/cloud-init/tmp-${count.index}
+  ISO=cloud-init.iso
+  EOT
+  filename = "${path.module}/cloud-init/cfg-${count.index}.sh"
+}
+
+# generate ISO
+resource "null_resource" "geniso" {
+  count = var.instance_count
+  # run generate iso
+  provisioner "local-exec" {
+    command = "bash ${path.module}/cloud-init/geniso.sh ${local_file.cloud_cfg[count.index].filename}"
   }
 }
 
@@ -32,7 +92,7 @@ data "template_file" "setup_aion" {
   template = file("${path.module}/setup-aion.tpl")
   vars = {
     script_file             = "${var.dest_dir}/setup-aion.py"
-    platform_addr           = vsphere_virtual_machine.aion[count.index].default_ip_address
+    platform_addr           = var.ip_address_list[count.index]
     aion_url                = var.aion_url
     aion_user               = var.aion_user
     aion_password           = var.aion_password
@@ -52,11 +112,13 @@ data "template_file" "setup_aion" {
 
 # provision the AION VM
 resource "null_resource" "provisioner" {
-  count = var.enable_provisioner ? var.instance_count : 0
+  depends_on = [vsphere_virtual_machine.aion]
+  count      = var.enable_provisioner ? var.instance_count : 0
   connection {
-    host        = vsphere_virtual_machine.aion[count.index].default_ip_address
+    host        = var.ip_address_list[count.index]
     type        = "ssh"
     user        = "debian"
+    private_key = file(var.private_key_file)
   }
 
   # force provisioners to rerun

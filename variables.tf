@@ -25,37 +25,61 @@ variable "memory" {
 variable "template_name" {
   description = "Name of the template created from the OVA"
   type        = string
-  default     = ""
 }
 
-variable "datacenter_id" {
-  description = "vSphere datacenter ID."
+variable "datacenter" {
+  description = "vSphere datacenter."
   type        = string
-  default     = ""
 }
 
-variable "datastore_id" {
-  description = "vSphere datastore ID."
+variable "datastore" {
+  description = "vSphere datastore."
   type        = string
-  default     = ""
 }
 
 variable "resource_pool_id" {
   description = "vSphere resource pool ID."
   type        = string
-  default     = ""
 }
 
 variable "mgmt_plane_network_id" {
   description = "Management network ID."
   type        = string
-  default     = ""
 }
 
-variable "data_plane_network_id" {
-  description = "Test or data plane network ID."
+variable "mac_address_list" {
+  description = "MAC address list."
+  type        = list(string)
+  default     = []
+}
+
+variable "ip_address_list" {
+  description = "IPv4 address list."
+  type        = list(string)
+  default     = []
+}
+
+variable "ip_netmask" {
+  type = string
+}
+
+variable "ip_gateway" {
+  type = string
+}
+
+variable "private_key_file" {
+  description = "SSH private key file."
   type        = string
-  default     = ""
+}
+
+variable "public_key_file" {
+  description = "SSH public key file."
+  type        = string
+}
+
+variable "iso_dest" {
+  description = "ISO destination path."
+  type        = string
 }
 
 variable "enable_provisioner" {
