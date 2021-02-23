@@ -47,16 +47,15 @@ variable "mgmt_plane_network_id" {
   type        = string
 }
 
-variable "mac_address_list" {
-  description = "MAC address list."
+variable "macs" {
+  description = "MAC address list.  Automatically set if not specified."
   type        = list(string)
   default     = []
 }
 
-variable "ip_address_list" {
-  description = "IPv4 address list."
+variable "ips" {
+  description = "Static IPv4 address list."
   type        = list(string)
-  default     = []
 }
 
 variable "ip_netmask" {

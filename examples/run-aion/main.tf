@@ -41,10 +41,10 @@ module "aion" {
   aion_user             = var.aion_user
   aion_password         = var.aion_password
   admin_password        = var.admin_password
-  ip_address_list       = var.ip_address_list
+  ips                   = var.ips
   ip_netmask            = var.ip_netmask
   ip_gateway            = var.ip_gateway
-  mac_address_list      = var.mac_address_list
+  macs                  = var.macs
   public_key_file       = var.public_key_file
   private_key_file      = var.private_key_file
   iso_dest              = var.iso_dest

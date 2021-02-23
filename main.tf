@@ -33,8 +33,8 @@ resource "vsphere_virtual_machine" "aion" {
     network_id   = var.mgmt_plane_network_id
     adapter_type = data.vsphere_virtual_machine.template_aion.network_interface_types[0]
 
-    use_static_mac = true
-    mac_address    = var.mac_address_list[count.index]
+    use_static_mac = length(var.macs) > 0 ? true : false
+    mac_address    = length(var.macs) > 0 ? var.macs[count.index] : null
   }
 
   disk {
@@ -60,7 +60,7 @@ resource "vsphere_file" "iso" {
   count              = var.instance_count
   datacenter         = data.vsphere_datacenter.aion.name
   datastore          = data.vsphere_datastore.aion.name
-  source_file        = "${path.module}/cloud-init/tmp-${count.index}/cloud-init.iso"
+  source_file        = "${path.module}/tmp-${count.index}/cloud-init.iso"
   destination_file   = "${var.iso_dest}/cloud-init-${count.index}.iso"
   create_directories = true
 }
@@ -69,13 +69,13 @@ resource "local_file" "cloud_cfg" {
   count    = var.instance_count
   content  = <<-EOT
   SSH_PUBLIC_KEY="${file(var.public_key_file)}"
-  IPV4_ADDR=${var.ip_address_list[count.index]}
+  IPV4_ADDR=${var.ips[count.index]}
   IPV4_NETMASK=${var.ip_netmask}
   IPV4_GATEWAY=${var.ip_gateway}
-  TMP_DIR=${path.module}/cloud-init/tmp-${count.index}
+  TMP_DIR=${path.module}/tmp-${count.index}
   ISO=cloud-init.iso
   EOT
-  filename = "${path.module}/cloud-init/cfg-${count.index}.sh"
+  filename = "${path.module}/cfg-tmp-${count.index}.sh"
 }
 
 # generate ISO
@@ -83,7 +83,7 @@ resource "null_resource" "geniso" {
   count = var.instance_count
   # run generate iso
   provisioner "local-exec" {
-    command = "bash ${path.module}/cloud-init/geniso.sh ${local_file.cloud_cfg[count.index].filename}"
+    command = "bash ${path.module}/geniso.sh ${local_file.cloud_cfg[count.index].filename}"
   }
 }
 
@@ -92,7 +92,7 @@ data "template_file" "setup_aion" {
   template = file("${path.module}/setup-aion.tpl")
   vars = {
     script_file             = "${var.dest_dir}/setup-aion.py"
-    platform_addr           = var.ip_address_list[count.index]
+    platform_addr           = var.ips[count.index]
     aion_url                = var.aion_url
     aion_user               = var.aion_user
     aion_password           = var.aion_password
@@ -115,7 +115,7 @@ resource "null_resource" "provisioner" {
   depends_on = [vsphere_virtual_machine.aion]
   count      = var.enable_provisioner ? var.instance_count : 0
   connection {
-    host        = var.ip_address_list[count.index]
+    host        = var.ips[count.index]
     type        = "ssh"
     user        = "debian"
     private_key = file(var.private_key_file)

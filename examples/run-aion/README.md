@@ -20,11 +20,11 @@
 | aion\_url | AION URL. | `string` | `"https://spirent.spirentaion.com"` | no |
 | aion\_user | AION user. Specify using command line or env variables. | `any` | n/a | yes |
 | instance\_count | Number of STCv instances to create. | `number` | `1` | no |
-| ip\_address\_list | IPv4 address list. | `list(string)` | <pre>[<br>  "10.0.0.11"<br>]</pre> | no |
 | ip\_gateway | IPv4 gateway address. | `string` | `"10.0.0.1"` | no |
 | ip\_netmask | IPv4 netmask. | `string` | `"255.255.255.0"` | no |
+| ips | Static IPv4 address list. | `list(string)` | <pre>[<br>  "10.0.0.11"<br>]</pre> | no |
 | iso\_dest | ISO destination directory | `string` | `"aion_iso"` | no |
-| mac\_address\_list | MAC address list. | `list(string)` | <pre>[<br>  "00:00:00:11:22:33"<br>]</pre> | no |
+| macs | MAC address list.  Automatically set if not specified. | `list(string)` | <pre>[<br>  "00:00:00:11:22:33"<br>]</pre> | no |
 | memory | The size of the virtual machine's memory, in MB. | `string` | `"2048"` | no |
 | mgmt\_plane\_network | Management network name. | `string` | `"Host Network"` | no |
 | num\_cpus | The total number of virtual processor cores to assign to STCv virtual machine | `string` | `"2"` | no |

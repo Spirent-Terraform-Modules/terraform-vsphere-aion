@@ -59,14 +59,14 @@ variable "mgmt_plane_network" {
   default     = "Host Network"
 }
 
-variable "mac_address_list" {
-  description = "MAC address list."
+variable "macs" {
+  description = "MAC address list.  Automatically set if not specified."
   type        = list(string)
   default     = ["00:00:00:11:22:33"]
 }
 
-variable "ip_address_list" {
-  description = "IPv4 address list."
+variable "ips" {
+  description = "Static IPv4 address list."
   type        = list(string)
   default     = ["10.0.0.11"]
 }

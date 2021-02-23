@@ -1,3 +1,68 @@
+# Spirent vSphere AION Platform Terraform
+
+![Image of Spirent AION](./images/aion.jpg)
+
+## Description
+
+Run Spirent AION platform instances.  After Terraform apply finishes you will be able to point your browser at the variable static_ips addresses.
+
+If you would like to configure the Spirent AION platform in a web browser set the variable enable_provisioner=false.  When enable_provisioner=true the instance will be configured.  However, license entitlement & product installation will need to be completed in your web browser (see below).  Login to the platform instance https://<your_ip> using the values of admin_email and admin_password.
+
+### Add License Entitlements
+1. From "Settings" <img src="./images/aion_settings.jpg" width="22" height="22"/> navigate to "License Manager", "Entitlements"
+2. Click "Install Entitlements"
+3. Use one of the following methods to add entitlements (#1 is prefered)
+   1. Login to <your_org>.spirentaion.com and select entitlements to host in the new instance\
+      **Note:** Hosted entitlements should be released before destroying the instance.  When entitlements are not released you will need to contact Spirent support to release them for you.
+   2. Install a license entitlement file obtained from Spirent support
+
+### Add Products
+1. From "Settings" <img src="./images/aion_settings.jpg" width="22" height="22"/> navigate to "Settings", "Add New Products"
+2. Click "Install New Products"
+3. Select products and versions and click "Install"
+
+## Prerequisite Configuration
+
+Prior to running Terraform the following must be completed:
+1.  Install govc
+2.  Install genisoimage
+3.  Download AION image
+4.  Create AION image vSphere Template
+
+### Install govc
+[govc](https://github.com/vmware/govmomi/tree/master/govc) is a vSphere command line interface (CLI). Follow installation instructions [here](https://github.com/vmware/govmomi/tree/master/govc#Installation).
+
+Set govc environmental variables specific to your vSphere: GOVC_URL, GOVC_INSECURE, GOVC_USERNAME, GOVC_PASSWORD
+
+Verify vSphere list inventory works:
+```
+govc ls -l "*"
+```
+
+### Install genisoimage
+genisoimage is a tool to create ISO images.  This terraform module uses genisomage to pass NoCloud cloud-init configuration to the instances.  Install genisoimage using your package manager.
+
+Ubuntu/Debian:
+```
+apt-get install genisoimage
+```
+
+Redhat:
+```
+yum install genisoimage
+```
+
+### Download AION image
+The AION platform OVA image can be downloaded from spirentaion.com in the "AION Downloads" of http::<your_organization>/spirentaion.com.
+
+### Create AION image vSphere Template
+Build a template spec file for the OVA image with the following commands:
+```
+./import-spec.sh "VM Network" > aion-spec.json
+govc import.ova -ds=<datastore> -options=aion-spec.json -name=aion_template <aion-platform-image-xxxx.ova>
+```
+
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -33,12 +98,12 @@
 | http\_enabled | Allow HTTP access as well as HTTPS.  Normally this is not recommended. | `bool` | `false` | no |
 | instance\_count | Number of STCv instances to create. | `number` | `1` | no |
 | instance\_name | Name assigned to the instance.  An instance number will be appended to the name. | `string` | `"AION"` | no |
-| ip\_address\_list | IPv4 address list. | `list(string)` | `[]` | no |
 | ip\_gateway | n/a | `string` | n/a | yes |
 | ip\_netmask | n/a | `string` | n/a | yes |
+| ips | Static IPv4 address list. | `list(string)` | n/a | yes |
 | iso\_dest | ISO destination path. | `string` | n/a | yes |
 | local\_admin\_password | Cluster local admin password for instance SSH access.  Will use admin\_password if not specified. | `string` | `""` | no |
-| mac\_address\_list | MAC address list. | `list(string)` | `[]` | no |
+| macs | MAC address list.  Automatically set if not specified. | `list(string)` | `[]` | no |
 | memory | The size of the virtual machine's memory, in MB. | `number` | `"2048"` | no |
 | metrics\_opt\_out | Opt-out of Spirent metrics data collection | `bool` | `false` | no |
 | mgmt\_plane\_network\_id | Management network ID. | `string` | n/a | yes |

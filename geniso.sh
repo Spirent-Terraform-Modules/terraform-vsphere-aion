@@ -34,7 +34,7 @@ pushd $TMP_DIR
 
 
 if [ "$ISO" == "" ]; then
-  ISO="../cloud-init.iso"
+  ISO="./cloud-init.iso"
 fi
 genisoimage  -output $ISO -volid cidata -joliet -rock user-data meta-data
 popd
