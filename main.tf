@@ -74,15 +74,15 @@ resource "null_resource" "temp_dir" {
     command = "mkdir ${self.triggers.temp_dir}"
   }
   provisioner "local-exec" {
-    when = destroy
+    when    = destroy
     command = "rm -rf ${self.triggers.temp_dir}"
   }
 }
 
 resource "local_file" "cloud_cfg" {
-  depends_on         = [null_resource.temp_dir]
-  count    = var.instance_count
-  content  = <<-EOT
+  depends_on = [null_resource.temp_dir]
+  count      = var.instance_count
+  content    = <<-EOT
   SSH_PUBLIC_KEY="${file(var.public_key_file)}"
   IPV4_ADDR=${var.ips[count.index]}
   IPV4_NETMASK=${var.ip_netmask}
@@ -90,7 +90,7 @@ resource "local_file" "cloud_cfg" {
   TMP_DIR=${path.module}/tmp-${random_id.uid.id}/instance-${count.index}
   ISO=cloud-init.iso
   EOT
-  filename = "${path.module}/tmp-${random_id.uid.id}/cfg-${count.index}.sh"
+  filename   = "${path.module}/tmp-${random_id.uid.id}/cfg-${count.index}.sh"
 }
 
 resource "random_id" "uid" {
