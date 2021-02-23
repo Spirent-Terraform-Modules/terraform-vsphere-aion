@@ -60,22 +60,37 @@ resource "vsphere_file" "iso" {
   count              = var.instance_count
   datacenter         = data.vsphere_datacenter.aion.name
   datastore          = data.vsphere_datastore.aion.name
-  source_file        = "${path.module}/tmp-${count.index}/cloud-init.iso"
+  source_file        = "${path.module}/tmp-${random_id.uid.id}/instance-${count.index}/cloud-init.iso"
   destination_file   = "${var.dest_datastore_folder}/cloud-init-${count.index}-${random_id.uid.id}.iso"
   create_directories = true
 }
 
+# create/remote temp directory
+resource "null_resource" "temp_dir" {
+  triggers = {
+    temp_dir = "${path.module}/tmp-${random_id.uid.id}"
+  }
+  provisioner "local-exec" {
+    command = "mkdir ${self.triggers.temp_dir}"
+  }
+  provisioner "local-exec" {
+    when = destroy
+    command = "rm -rf ${self.triggers.temp_dir}"
+  }
+}
+
 resource "local_file" "cloud_cfg" {
+  depends_on         = [null_resource.temp_dir]
   count    = var.instance_count
   content  = <<-EOT
   SSH_PUBLIC_KEY="${file(var.public_key_file)}"
   IPV4_ADDR=${var.ips[count.index]}
   IPV4_NETMASK=${var.ip_netmask}
   IPV4_GATEWAY=${var.ip_gateway}
-  TMP_DIR=${path.module}/tmp-${count.index}
+  TMP_DIR=${path.module}/tmp-${random_id.uid.id}/instance-${count.index}
   ISO=cloud-init.iso
   EOT
-  filename = "${path.module}/cfg-tmp-${count.index}.sh"
+  filename = "${path.module}/tmp-${random_id.uid.id}/cfg-${count.index}.sh"
 }
 
 resource "random_id" "uid" {

@@ -1,10 +1,10 @@
-# Spirent vSphere AION Platform Terraform
+# Spirent AION Platform vSphere Terraform
 
 ![Image of Spirent AION](./images/aion.jpg)
 
 ## Description
 
-Run Spirent AION platform instances.  After Terraform apply finishes you will be able to point your browser at the variable static_ips addresses.
+Run Spirent AION platform instances.  After Terraform apply finishes you will be able to point your browser at the variable ips addresses.
 
 If you would like to configure the Spirent AION platform in a web browser set the variable enable_provisioner=false.  When enable_provisioner=true the instance will be configured.  However, license entitlement & product installation will need to be completed in your web browser (see below).  Login to the platform instance https://<your_ip> using the values of admin_email and admin_password.
 
@@ -27,7 +27,7 @@ Prior to running Terraform the following must be completed:
 1.  [Install govc](#install-govc)
 2.  [Install genisoimage](#install-genisoimage)
 3.  [Download AION image](#download-aion-image)
-4.  [Create AION image vSphere Template](#create-aion-image-vsphere)
+4.  [Create AION image vSphere Template](#create-aion-image-vsphere-template)
 
 ### Install govc
 [govc](https://github.com/vmware/govmomi/tree/master/govc) is a vSphere command line interface (CLI). Follow installation instructions [here](https://github.com/vmware/govmomi/tree/master/govc#Installation).
@@ -47,7 +47,7 @@ Ubuntu/Debian:
 apt-get install genisoimage
 ```
 
-Redhat:
+Red Hat:
 ```
 yum install genisoimage
 ```
@@ -56,9 +56,9 @@ yum install genisoimage
 The AION platform OVA image can be downloaded from spirentaion.com in the "AION Downloads" of http::<your_organization>/spirentaion.com.
 
 ### Create AION image vSphere Template
-Build a template spec file for the OVA image with the following commands:
+Create vSphere AION template using the following commands:
 ```
-./import-spec.sh "VM Network" > aion-spec.json
+./import-spec.sh <vsphere_network> > aion-spec.json
 govc import.ova -ds=<datastore> -options=aion-spec.json -name=aion_template <aion-platform-image-xxxx.ova>
 ```
 
