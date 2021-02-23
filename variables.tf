@@ -5,19 +5,19 @@ variable "instance_name" {
 }
 
 variable "instance_count" {
-  description = "Number of STCv instances to create."
+  description = "Number of AION instances to create"
   type        = number
   default     = 1
 }
 
 variable "num_cpus" {
-  description = "The total number of virtual processor cores to assign to STCv virtual machine"
+  description = "Number of virtual processor cores assigned to an instance"
   type        = number
   default     = "2"
 }
 
 variable "memory" {
-  description = "The size of the virtual machine's memory, in MB."
+  description = "Size of the virtual machine's memory, in MB"
   type        = number
   default     = "2048"
 }
@@ -28,22 +28,22 @@ variable "template_name" {
 }
 
 variable "datacenter" {
-  description = "vSphere datacenter."
+  description = "vSphere datacenter name"
   type        = string
 }
 
 variable "datastore" {
-  description = "vSphere datastore."
+  description = "vSphere datastore name"
   type        = string
 }
 
 variable "resource_pool_id" {
-  description = "vSphere resource pool ID."
+  description = "vSphere resource pool ID"
   type        = string
 }
 
 variable "mgmt_plane_network_id" {
-  description = "Management network ID."
+  description = "Management network ID"
   type        = string
 }
 
@@ -54,30 +54,32 @@ variable "macs" {
 }
 
 variable "ips" {
-  description = "Static IPv4 address list."
+  description = "Static IPv4 address list"
   type        = list(string)
 }
 
 variable "ip_netmask" {
+  description = "IPv4 netmask"
   type = string
 }
 
 variable "ip_gateway" {
+  description = "IPv4 gateway"
   type = string
 }
 
 variable "private_key_file" {
-  description = "SSH private key file."
+  description = "SSH private key file"
   type        = string
 }
 
 variable "public_key_file" {
-  description = "SSH public key file."
+  description = "SSH public key file"
   type        = string
 }
 
-variable "iso_dest" {
-  description = "ISO destination path."
+variable "dest_datastore_folder" {
+  description = "Destination datastore folder for cloud-init ISO images"
   type        = string
 }
 

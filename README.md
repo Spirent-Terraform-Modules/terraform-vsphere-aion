@@ -21,7 +21,7 @@ If you would like to configure the Spirent AION platform in a web browser set th
 2. Click "Install New Products"
 3. Select products and versions and click "Install"
 
-## Prerequisite Configuration
+## Prerequisites
 
 Prior to running Terraform the following must be completed:
 1.  Install govc

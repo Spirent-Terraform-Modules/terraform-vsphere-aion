@@ -9,16 +9,11 @@ provider "vsphere" {
 }
 
 data "vsphere_datacenter" "aion" {
-  name = var.vsphere_datacenter
-}
-
-data "vsphere_datastore" "aion" {
-  name          = var.vsphere_datastore
-  datacenter_id = data.vsphere_datacenter.aion.id
+  name = var.datacenter
 }
 
 data "vsphere_compute_cluster" "aion" {
-  name          = var.vsphere_compute_cluster
+  name          = var.compute_cluster
   datacenter_id = data.vsphere_datacenter.aion.id
 }
 
@@ -32,25 +27,26 @@ module "aion" {
   instance_count        = var.instance_count
   num_cpus              = var.num_cpus
   memory                = var.memory
-  datacenter            = data.vsphere_datacenter.aion.name
-  datastore             = data.vsphere_datastore.aion.name
+  datacenter            = var.datacenter
+  datastore             = var.datastore
   resource_pool_id      = data.vsphere_compute_cluster.aion.resource_pool_id
   mgmt_plane_network_id = data.vsphere_network.mgmt_plane.id
   template_name         = var.template_name
-  aion_url              = var.aion_url
-  aion_user             = var.aion_user
-  aion_password         = var.aion_password
-  admin_password        = var.admin_password
   ips                   = var.ips
   ip_netmask            = var.ip_netmask
   ip_gateway            = var.ip_gateway
   macs                  = var.macs
+  dest_datastore_folder = var.dest_datastore_folder
+  
+  aion_url              = var.aion_url
+  aion_user             = var.aion_user
+  aion_password         = var.aion_password
+  admin_password        = var.admin_password
   public_key_file       = var.public_key_file
   private_key_file      = var.private_key_file
-  iso_dest              = var.iso_dest
 }
 
 output "instance_uuids" {
-  description = "List of UUIDs assigned to the instances, if applicable."
+  description = "List of UUIDs assigned to the instances"
   value       = module.aion.*.instance_uuids
 }

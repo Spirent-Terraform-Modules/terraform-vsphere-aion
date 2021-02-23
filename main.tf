@@ -61,7 +61,7 @@ resource "vsphere_file" "iso" {
   datacenter         = data.vsphere_datacenter.aion.name
   datastore          = data.vsphere_datastore.aion.name
   source_file        = "${path.module}/tmp-${count.index}/cloud-init.iso"
-  destination_file   = "${var.iso_dest}/cloud-init-${count.index}.iso"
+  destination_file   = "${var.dest_datastore_folder}/cloud-init-${count.index}-${random_id.uid.id}.iso"
   create_directories = true
 }
 
@@ -76,6 +76,10 @@ resource "local_file" "cloud_cfg" {
   ISO=cloud-init.iso
   EOT
   filename = "${path.module}/cfg-tmp-${count.index}.sh"
+}
+
+resource "random_id" "uid" {
+  byte_length = 8
 }
 
 # generate ISO
