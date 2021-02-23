@@ -1,11 +1,13 @@
 ## Run Spirent AION Platform.
 
 ## Usage
-To run this example you need to execute \([*see required prerequisites](../../README.md#Prerequisites)\):
+To run this example you need to execute:
 
     $ terraform init
     $ terraform plan
     $ terraform apply
+
+_Note:[*Prerequisites](../../README.md#Prerequisites) are also required._
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
