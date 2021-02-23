@@ -24,10 +24,10 @@ If you would like to configure the Spirent AION platform in a web browser set th
 ## Prerequisites
 
 Prior to running Terraform the following must be completed:
-1.  Install govc
-2.  Install genisoimage
-3.  Download AION image
-4.  Create AION image vSphere Template
+1.  [Install govc](#install-govc)
+2.  [Install genisoimage](#install-genisoimage)
+3.  [Download AION image](#download-aion-image)
+4.  [Create AION image vSphere Template](#create-aion-image-vsphere)
 
 ### Install govc
 [govc](https://github.com/vmware/govmomi/tree/master/govc) is a vSphere command line interface (CLI). Follow installation instructions [here](https://github.com/vmware/govmomi/tree/master/govc#Installation).
