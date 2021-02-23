@@ -7,7 +7,7 @@ To run this example you need to execute:
     $ terraform plan
     $ terraform apply
 
-_Note:[*Prerequisites](../../README.md#Prerequisites) are also required._
+_Note:[Prerequisites](../../README.md#Prerequisites) are also required._
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
