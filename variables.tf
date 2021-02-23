@@ -60,12 +60,12 @@ variable "ips" {
 
 variable "ip_netmask" {
   description = "IPv4 netmask"
-  type = string
+  type        = string
 }
 
 variable "ip_gateway" {
   description = "IPv4 gateway"
-  type = string
+  type        = string
 }
 
 variable "private_key_file" {

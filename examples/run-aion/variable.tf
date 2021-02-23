@@ -91,7 +91,7 @@ variable "public_key_file" {
 }
 
 variable "dest_datastore_folder" {
-  description = "Destination datastore folder for cloud-init ISO images"  
+  description = "Destination datastore folder for cloud-init ISO images"
   default     = "iso"
 }
 

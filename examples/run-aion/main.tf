@@ -37,13 +37,13 @@ module "aion" {
   ip_gateway            = var.ip_gateway
   macs                  = var.macs
   dest_datastore_folder = var.dest_datastore_folder
-  
-  aion_url              = var.aion_url
-  aion_user             = var.aion_user
-  aion_password         = var.aion_password
-  admin_password        = var.admin_password
-  public_key_file       = var.public_key_file
-  private_key_file      = var.private_key_file
+
+  aion_url         = var.aion_url
+  aion_user        = var.aion_user
+  aion_password    = var.aion_password
+  admin_password   = var.admin_password
+  public_key_file  = var.public_key_file
+  private_key_file = var.private_key_file
 }
 
 output "instance_uuids" {
