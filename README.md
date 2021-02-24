@@ -1,25 +1,25 @@
-# Spirent AION Platform vSphere Terraform
+# vSphere Spirent AION Platform Terraform
 
 ![Image of Spirent AION](./images/aion.jpg)
 
 ## Description
 
-Run Spirent AION platform instances.  After Terraform apply finishes you will be able to point your browser at the variable ips addresses.
+Run [Spirent AION](https://www.spirent.com/products/aion) platform instances.  After Terraform apply finishes you will be able to point your browser at the variable `ips` addresses.
 
-If you would like to configure the Spirent AION platform in a web browser set the variable enable_provisioner=false.  When enable_provisioner=true the instance will be configured.  However, license entitlement & product installation will need to be completed in your web browser (see below).  Login to the platform instance https://<your_ip> using the values of admin_email and admin_password.
+If you would like to configure the Spirent AION platform in a web browser set the variable `enable_provisioner=false`.  When `enable_provisioner=true` the instance will be configured.  However, license entitlement and product installation will need to be completed in your web browser (see below).  Login to the platform instance https://<your_ip> using the values of `admin_email` and `admin_password`.
 
 ### Add License Entitlements
-1. From "Settings" <img src="./images/aion_settings.jpg" width="22" height="22"/> navigate to "License Manager", "Entitlements"
-2. Click "Install Entitlements"
+1. From _Settings_ <img src="./images/aion_settings.jpg" width="22" height="22"/> navigate to _License Manager_, _Entitlements_
+2. Click _Install Entitlements_
 3. Use one of the following methods to add entitlements (#1 is prefered)
    1. Login to <your_org>.spirentaion.com and select entitlements to host in the new instance\
       **Note:** Hosted entitlements should be released before destroying the instance.  When entitlements are not released you will need to contact Spirent support to release them for you.
    2. Install a license entitlement file obtained from Spirent support
 
 ### Add Products
-1. From "Settings" <img src="./images/aion_settings.jpg" width="22" height="22"/> navigate to "Settings", "Add New Products"
-2. Click "Install New Products"
-3. Select products and versions and click "Install"
+1. From _Settings_ <img src="./images/aion_settings.jpg" width="22" height="22"/> navigate to _Settings_, _Add New Products_
+2. Click _Install New Products_
+3. Select products and versions and click _Install_
 
 ## Prerequisites
 
@@ -32,7 +32,7 @@ Prior to running Terraform the following must be completed:
 ### Install govc
 [govc](https://github.com/vmware/govmomi/tree/master/govc) is a vSphere command line interface (CLI). Follow installation instructions [here](https://github.com/vmware/govmomi/tree/master/govc#Installation).
 
-Set govc environmental variables specific to your vSphere: GOVC_URL, GOVC_INSECURE, GOVC_USERNAME, GOVC_PASSWORD
+Set govc environmental variables specific to your vSphere: `GOVC_URL`, `GOVC_INSECURE`, `GOVC_USERNAME`, `GOVC_PASSWORD`
 
 Verify vSphere list inventory works:
 ```
@@ -47,13 +47,13 @@ Ubuntu/Debian:
 apt-get install genisoimage
 ```
 
-Red Hat:
+Red Hat/CentOS:
 ```
 yum install genisoimage
 ```
 
 ### Download AION image
-The AION platform OVA image can be downloaded from spirentaion.com in the "AION Downloads" of http::<your_organization>/spirentaion.com.
+The AION platform OVA image can be downloaded from spirentaion.com in the _AION Downloads_ of http::<your_organization>/spirentaion.com.
 
 ### Create AION image vSphere Template
 Create vSphere AION template using the following commands:

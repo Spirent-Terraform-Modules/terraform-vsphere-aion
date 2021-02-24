@@ -7,7 +7,9 @@ To run this example you need to execute:
     $ terraform plan
     $ terraform apply
 
-_Note: [Prerequisites](../../README.md#Prerequisites) are also required._
+This example will create resources that will incur a cost. Run `terraform destroy` when you don't need these resources.
+
+**Note:** [Prerequisites](../../README.md#Prerequisites) are also required.
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
