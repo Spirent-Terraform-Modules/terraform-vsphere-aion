@@ -1,10 +1,10 @@
 #!/bin/bash
 
 if [ "$1" != "" ]; then
-  source $1
+  source "$1"
 fi
 
-if [ $TMP_DIR == "" ]; then
+if [ "$TMP_DIR" == "" ]; then
     TMP_DIR="./tmp"
 fi
 

@@ -4,7 +4,7 @@ SYNTAX="syntax: import_spec.sh [network]"
 
 if [ "$1" == "" ]; then
    >&2 echo "error: Invalid syntax."
-   >&2 echo $SYNTAX
+   >&2 echo "$SYNTAX"
    exit 1
 fi
 
