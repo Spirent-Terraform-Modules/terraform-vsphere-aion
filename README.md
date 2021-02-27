@@ -113,7 +113,7 @@ No Modules.
 | datacenter | vSphere datacenter name | `string` | n/a | yes |
 | datastore | vSphere datastore name | `string` | n/a | yes |
 | dest\_datastore\_folder | Destination datastore folder for cloud-init ISO images | `string` | n/a | yes |
-| dest\_dir | Destination directory on the instance where provisining files will be copied | `string` | `"~"` | no |
+| dest\_dir | Destination directory on the instance where provisioning files will be copied | `string` | `"~"` | no |
 | enable\_provisioner | Enable provisioning.  When enabled instances will be initialized with the specified variables. | `bool` | `true` | no |
 | http\_enabled | Allow HTTP access as well as HTTPS.  Normally this is not recommended. | `bool` | `false` | no |
 | instance\_count | Number of AION instances to create | `number` | `1` | no |
