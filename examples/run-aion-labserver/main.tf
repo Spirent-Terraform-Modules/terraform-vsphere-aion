@@ -38,6 +38,7 @@ module "aion" {
   ip_gateway            = var.ip_gateway
   macs                  = var.macs
   dest_datastore_folder = var.dest_datastore_folder
+  os_disk_size_gb       = 35
 
   aion_url         = var.aion_url
   aion_user        = var.aion_user

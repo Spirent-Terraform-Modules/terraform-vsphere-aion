@@ -39,7 +39,7 @@ resource "vsphere_virtual_machine" "aion" {
 
   disk {
     name             = "${var.instance_name}.vmdk"
-    size             = data.vsphere_virtual_machine.template_aion.disks.0.size
+    size             = var.os_disk_size_gb  == null ? data.vsphere_virtual_machine.template_aion.disks.0.size : var.os_disk_size_gb
     eagerly_scrub    = data.vsphere_virtual_machine.template_aion.disks.0.eagerly_scrub
     thin_provisioned = data.vsphere_virtual_machine.template_aion.disks.0.thin_provisioned
     unit_number      = 0

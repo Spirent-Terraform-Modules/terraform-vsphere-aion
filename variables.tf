@@ -27,6 +27,13 @@ variable "template_name" {
   type        = string
 }
 
+variable "os_disk_size_gb" {
+  type        = number
+  description = "Size of the OS disk in GB. When null size will be determined from the template image."
+  default     = null
+}
+
+
 variable "datacenter" {
   description = "vSphere datacenter name"
   type        = string
