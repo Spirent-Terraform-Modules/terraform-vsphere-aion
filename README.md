@@ -19,6 +19,7 @@ Prior to running Terraform the following must be completed:
 2.  [Install genisoimage](#install-genisoimage)
 3.  [Download AION image](#download-aion-image)
 4.  [Create AION image vSphere Template](#create-aion-image-vsphere-template)
+5.  Create public and private key files
 
 ### Install govc
 [govc](https://github.com/vmware/govmomi/tree/master/govc) is a vSphere command line interface (CLI). Follow installation instructions [here](https://github.com/vmware/govmomi/tree/master/govc#Installation).
@@ -62,12 +63,18 @@ Terraform examples are located in the [examples](./examples) folder.
 module "aion" {
   source = "git::https://github.com/Spirent-Terraform-Modules/terraform-vsphere-aion"
 
-  vpc_id         = "vpc-123456789"
-  subnet_id      = "subnet-123456789"
+  datacenter            = "dc"
+  datastore             = "ds"
+  resource_pool_id      = "resgroup-123"
+  mgmt_plane_network_id = "dvportgroup-123"
+  template_name         = "aion_template"
+  ips                   = ["10.0.0.11"]
+  ip_netmask            = "255.255.255.0"
+  ip_gateway            = "10.0.0.1"
+  macs                  = ["00:00:00:11:22:33"]
+  dest_datastore_folder = "iso"
 
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-
-  public_key_name  = "./bootstrap_public_key_file"
+  public_key_file  = "./bootstrap_public_key_file"
   private_key_file = "./bootstrap_private_key_file"
 
   aion_url       = "https://spirent.spirentaion.com"
@@ -148,6 +155,7 @@ No Modules.
 | node\_storage\_provider | Cluster node storage provider | `string` | `"local"` | no |
 | node\_storage\_remote\_uri | Cluster node storage URI.  Leave blank for default when provider is local | `string` | `""` | no |
 | num\_cpus | Number of virtual processor cores assigned to an instance | `number` | `"2"` | no |
+| os\_disk\_size\_gb | Size of the OS disk in GB. When null size will be determined from the template image. | `number` | `null` | no |
 | private\_key\_file | SSH private key file | `string` | n/a | yes |
 | public\_key\_file | SSH public key file | `string` | n/a | yes |
 | resource\_pool\_id | vSphere resource pool ID | `string` | n/a | yes |
