@@ -36,12 +36,12 @@ variable "instance_count" {
 
 variable "num_cpus" {
   description = "Number of virtual processor cores assigned to an instance"
-  default     = "2"
+  default     = "4"
 }
 
 variable "memory" {
   description = "Size of the virtual machine's memory, in MB"
-  default     = "2048"
+  default     = "32768"
 }
 
 variable "template_name" {
@@ -110,4 +110,10 @@ variable "aion_password" {
 
 variable "admin_password" {
   description = "New cluster admin password. Specify using command line or env variables."
+}
+
+variable "os_disk_size_gb" {
+  type        = number
+  description = "Size of the OS disk in GB. When null size will be determined from the template image."
+  default     = 500
 }
