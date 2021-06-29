@@ -1,4 +1,4 @@
-## Example : This Terraform module deploys Spirent TestCenter Virtual Machines from OVF template.
+## Example : This Terraform module deploys Spirent TestCenter Virtual Machines from OVF template, deploys STC LabServer, and adds entitlements.
 # The example requires the user to provide an already existing datacenter , datastore, network , OVF template details .
 
 provider "vsphere" {
