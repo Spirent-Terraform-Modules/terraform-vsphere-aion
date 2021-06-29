@@ -1,4 +1,4 @@
-## Example : This Terraform module deploys AION Virtual Machines from OVF template.
+## Example : This Terraform module deploys AION Virtual Machines from OVF template, deploys STC LabServer, and adds entitlements.
 # The example requires the user to provide an already existing datacenter , datastore, network , OVF template details .
 
 provider "vsphere" {
@@ -23,7 +23,9 @@ data "vsphere_network" "mgmt_plane" {
 }
 
 module "aion" {
-  source                = "../.."
+  source = "../.."
+
+  template_name         = var.template_name
   instance_count        = var.instance_count
   num_cpus              = var.num_cpus
   memory                = var.memory
@@ -31,12 +33,12 @@ module "aion" {
   datastore             = var.datastore
   resource_pool_id      = data.vsphere_compute_cluster.aion.resource_pool_id
   mgmt_plane_network_id = data.vsphere_network.mgmt_plane.id
-  template_name         = var.template_name
   ips                   = var.ips
   ip_netmask            = var.ip_netmask
   ip_gateway            = var.ip_gateway
   macs                  = var.macs
   dest_datastore_folder = var.dest_datastore_folder
+  os_disk_size_gb       = var.os_disk_size_gb
 
   aion_url         = var.aion_url
   aion_user        = var.aion_user
@@ -44,6 +46,29 @@ module "aion" {
   admin_password   = var.admin_password
   public_key_file  = var.public_key_file
   private_key_file = var.private_key_file
+  http_enabled     = true
+
+  deploy_location = "labserver"
+  deploy_products = [
+    {
+      name    = "STC LabServer"
+      version = "5.20.0032"
+    }
+  ]
+
+  entitlements = [
+    {
+      product = "Spirent TestCenter"
+      license = "Virtual High Scale Bandwidth"
+      number  = 1000
+    },
+    {
+      product = "Spirent TestCenter"
+      license = "Access"
+      number  = 100
+    }
+  ]
+
 }
 
 output "instance_uuids" {

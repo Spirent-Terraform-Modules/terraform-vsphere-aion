@@ -27,6 +27,13 @@ variable "template_name" {
   type        = string
 }
 
+variable "os_disk_size_gb" {
+  type        = number
+  description = "Size of the OS disk in GB. When null size will be determined from the template image."
+  default     = null
+}
+
+
 variable "datacenter" {
   description = "vSphere datacenter name"
   type        = string
@@ -173,4 +180,22 @@ variable "dest_dir" {
   description = "Destination directory on the instance where provisioning files will be copied"
   type        = string
   default     = "~"
+}
+
+variable "deploy_location" {
+  description = "Location name for deployed product instances."
+  type        = string
+  default     = "location1"
+}
+
+variable "deploy_products" {
+  description = "List of products to deploy. See Product List below for details."
+  type        = list(map(string))
+  default     = []
+}
+
+variable "entitlements" {
+  description = "Install hosted entitlements from organization's AION platform. See Entitlement List below for details."
+  type        = list(map(string))
+  default     = []
 }

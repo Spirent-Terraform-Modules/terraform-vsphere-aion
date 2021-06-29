@@ -1,6 +1,9 @@
-## Run Spirent AION Platform.
+## Run Spirent AION Platform LabServer
+
+Run Spirent AION Platform, deploy STC LabServer product and use hosted Spirent TestCenter license entitlements.
 
 ## Usage
+
 To run this example you need to execute:
 
     $ terraform init
@@ -14,15 +17,13 @@ This example will create resources that will incur a cost. Run `terraform destro
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| vsphere | 1.24.3 |
+No requirements.
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| vsphere | 1.24.3 |
+| vsphere | n/a |
 
 ## Modules
 
@@ -34,9 +35,9 @@ This example will create resources that will incur a cost. Run `terraform destro
 
 | Name |
 |------|
-| [vsphere_compute_cluster](https://registry.terraform.io/providers/hashicorp/vsphere/1.24.3/docs/data-sources/compute_cluster) |
-| [vsphere_datacenter](https://registry.terraform.io/providers/hashicorp/vsphere/1.24.3/docs/data-sources/datacenter) |
-| [vsphere_network](https://registry.terraform.io/providers/hashicorp/vsphere/1.24.3/docs/data-sources/network) |
+| [vsphere_compute_cluster](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs/data-sources/compute_cluster) |
+| [vsphere_datacenter](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs/data-sources/datacenter) |
+| [vsphere_network](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs/data-sources/network) |
 
 ## Inputs
 
@@ -55,9 +56,10 @@ This example will create resources that will incur a cost. Run `terraform destro
 | ip\_netmask | IPv4 netmask | `string` | `"255.255.255.0"` | no |
 | ips | Static IPv4 address list | `list(string)` | <pre>[<br>  "10.0.0.11"<br>]</pre> | no |
 | macs | MAC address list.  Automatically set if not specified. | `list(string)` | <pre>[<br>  "00:00:00:11:22:33"<br>]</pre> | no |
-| memory | Size of the virtual machine's memory, in MB | `string` | `"2048"` | no |
+| memory | Size of the virtual machine's memory, in MB | `string` | `"32768"` | no |
 | mgmt\_plane\_network | Management network name | `string` | `"Host Network"` | no |
-| num\_cpus | Number of virtual processor cores assigned to an instance | `string` | `"2"` | no |
+| num\_cpus | Number of virtual processor cores assigned to an instance | `string` | `"4"` | no |
+| os\_disk\_size\_gb | Size of the OS disk in GB. When null size will be determined from the template image. | `number` | `500` | no |
 | private\_key\_file | SSH private key file | `string` | `"~/.ssh/id_rsa"` | no |
 | public\_key\_file | SSH public key file | `string` | `"~/.ssh/id_rsa.pub"` | no |
 | template\_name | Name of the template created from the OVA | `string` | `"aion_template"` | no |

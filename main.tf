@@ -39,7 +39,7 @@ resource "vsphere_virtual_machine" "aion" {
 
   disk {
     name             = "${var.instance_name}.vmdk"
-    size             = data.vsphere_virtual_machine.template_aion.disks.0.size
+    size             = var.os_disk_size_gb == null ? data.vsphere_virtual_machine.template_aion.disks.0.size : var.os_disk_size_gb
     eagerly_scrub    = data.vsphere_virtual_machine.template_aion.disks.0.eagerly_scrub
     thin_provisioned = data.vsphere_virtual_machine.template_aion.disks.0.thin_provisioned
     unit_number      = 0
@@ -126,6 +126,24 @@ data "template_file" "setup_aion" {
     node_storage_remote_uri = var.node_storage_remote_uri
     metrics_opt_out         = var.metrics_opt_out
     http_enabled            = var.http_enabled
+    deploy_location         = var.deploy_location
+    deploy_products         = jsonencode(var.deploy_products)
+    entitlements            = jsonencode(var.entitlements)
+  }
+}
+
+data "template_file" "release_aion" {
+  count    = var.enable_provisioner ? var.instance_count : 0
+  template = file("${path.module}/release-aion.tpl")
+  vars = {
+    script_file          = "${var.dest_dir}/release-aion.py"
+    platform_addr        = var.ips[count.index]
+    aion_url             = var.aion_url
+    aion_user            = var.aion_user
+    aion_password        = var.aion_password
+    admin_email          = var.admin_email
+    admin_password       = var.admin_password
+    local_admin_password = var.local_admin_password
   }
 }
 
@@ -133,11 +151,17 @@ data "template_file" "setup_aion" {
 resource "null_resource" "provisioner" {
   depends_on = [vsphere_virtual_machine.aion]
   count      = var.enable_provisioner ? var.instance_count : 0
-  connection {
+  triggers = {
+    dest_dir    = var.dest_dir
     host        = var.ips[count.index]
+    private_key = file(var.private_key_file)
+  }
+  connection {
+    host        = self.triggers.host
     type        = "ssh"
     user        = "debian"
-    private_key = file(var.private_key_file)
+    private_key = self.triggers.private_key
+    agent       = false
   }
 
   # force provisioners to rerun
@@ -156,10 +180,28 @@ resource "null_resource" "provisioner" {
     destination = "${var.dest_dir}/setup-aion.sh"
   }
 
+  provisioner "file" {
+    source      = "${path.module}/release-aion.py"
+    destination = "${var.dest_dir}/release-aion.py"
+  }
+
+  provisioner "file" {
+    content     = data.template_file.release_aion[count.index].rendered
+    destination = "${var.dest_dir}/release-aion.sh"
+  }
+
   # run setup AION
   provisioner "remote-exec" {
     inline = [
       "bash ${var.dest_dir}/setup-aion.sh"
+    ]
+  }
+
+  # destroy provisioner
+  provisioner "remote-exec" {
+    when = destroy
+    inline = [
+      "bash ${self.triggers.dest_dir}/release-aion.sh"
     ]
   }
 }
